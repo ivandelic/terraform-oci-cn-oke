@@ -14,18 +14,28 @@ provider "oci" {
   region           = var.region
 }
 
+module "vcn-for-oke" {
+  source           = "ivandelic/cn-vcn/oci"
+  version          = "1.0.1"
+  compartment_ocid = var.compartment_ocid
+  name             = var.vcn_name
+  vcn_cidr         = var.vcn_cidr
+  vcn_subnets      = var.vcn_subnets
+}
+
 module "oke" {
   source           = "ivandelic/cn-oke/oci"
+  version          = "1.0.0"
   compartment_ocid = var.compartment_ocid
-  k8s_version      = "v1.24.1"
-  name             = "test"
-  pools             = {
+  k8s_version      = var.k8s_version
+  name             = var.oke_name
+  pools            = {
     pool-1 = {
       vm_image_name = "Oracle-Linux-7.9-2022.10.04-0"
     }
   }
-  subnet_id_endpoint = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaazlagqecsstgg6e2j6gnk3h62ph32egex56rzxafdbjycwiiv67yq"
-  subnet_id_lb = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaav4spwvps4jmy4ijpizbhbrs7kfqhkio6ybmvll4iedzlcepn6jna"
-  subnet_id_node = "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaadzbbhwczbsetqiiodadafduednrt75yduysmtgnvuxb5bjtdan6a"
-  vcn_id = "ocid1.vcn.oc1.eu-frankfurt-1.amaaaaaauevftmqamgt2k643vyyvxgnahzqt3i2ac4pspk6knuygz5lvu66q"
+  subnet_id_endpoint = module.vcn-for-oke.subnets["k8s-endpoint-api"].id
+  subnet_id_lb       = module.vcn-for-oke.subnets["load-balancer"].id
+  subnet_id_node     = module.vcn-for-oke.subnets["worker-node"].id
+  vcn_id             = module.vcn-for-oke.vcn_id
 }
