@@ -27,7 +27,7 @@ resource "oci_containerengine_cluster" "containerengine_cluster" {
   defined_tags = var.oke_defined_tags
   endpoint_config {
     is_public_ip_enabled = var.is_api_endpoint_public
-    subnet_id            = var.subnet_id_node
+    subnet_id            = var.subnet_id_endpoint
   }
   image_policy_config {
     is_policy_enabled = var.is_image_verification_enabled
