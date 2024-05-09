@@ -76,7 +76,14 @@ resource "oci_containerengine_node_pool" "workers" {
       for_each = data.oci_identity_availability_domains.ads.availability_domains
       content {
         availability_domain = placement_configs.value.name
-        subnet_id           = var.subnet_id_node
+        subnet_id           = each.value.subnet_id_node
+      }
+    }
+    dynamic "node_pool_pod_network_option_details" {
+      for_each = var.cni_type == "OCI_VCN_IP_NATIVE" ? [1] : []
+      content {
+        cni_type = var.cni_type
+        pod_subnet_ids = [each.value.subnet_id_pod]
       }
     }
     size         = each.value.pool_total_vm

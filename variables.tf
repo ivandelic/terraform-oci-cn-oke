@@ -69,7 +69,13 @@ variable "subnet_id_lb" {
   type = string
 }
 variable "subnet_id_node" {
-  description = "Targeted subnet for worker nodes."
+  description = "DEPRECATED Use pools.subnet_id_node instead. Targeted subnet for worker nodes."
+  default = null
+  type = string
+}
+variable "subnet_id_pod" {
+  description = "DEPRECATED Use pools.subnet_id_pod instead. Targeted subnet for pods, if you are using OCI VCN CNI."
+  default = null
   type = string
 }
 variable "subnet_id_endpoint" {
@@ -85,5 +91,7 @@ variable "pools" {
     vm_ocpu = optional(number, 2)
     vm_image_name = string
     vm_defined_tags = optional(map(string))
+    subnet_id_node = string
+    subnet_id_pod = string
   }))
 }
