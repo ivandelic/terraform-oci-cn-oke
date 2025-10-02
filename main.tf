@@ -19,6 +19,7 @@ data "oci_core_images" "oke_images" {
 resource "oci_containerengine_cluster" "containerengine_cluster" {
   compartment_id     = var.compartment_ocid
   kubernetes_version = var.k8s_version
+  type               = var.cluster_type
   name               = format("%s%s", "oke-", var.name)
   vcn_id             = var.vcn_id
   cluster_pod_network_options {
@@ -82,7 +83,7 @@ resource "oci_containerengine_node_pool" "workers" {
     dynamic "node_pool_pod_network_option_details" {
       for_each = var.cni_type == "OCI_VCN_IP_NATIVE" ? [1] : []
       content {
-        cni_type = var.cni_type
+        cni_type       = var.cni_type
         pod_subnet_ids = [each.value.subnet_id_pod]
       }
     }
@@ -98,4 +99,5 @@ resource "oci_containerengine_node_pool" "workers" {
     image_id    = data.oci_core_images.oke_images[each.key].images[0].id
     source_type = "IMAGE"
   }
+  ssh_public_key = each.value.ssh_public_key
 }

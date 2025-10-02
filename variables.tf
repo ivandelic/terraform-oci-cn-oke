@@ -20,6 +20,11 @@ variable "cni_type" {
   default = "FLANNEL_OVERLAY"
   type = string
 }
+variable "cluster_type" {
+  description = "Type of OKE cluster. Module supports 'BASIC' or 'ENHANCED'"
+  default = "ENHANCED"
+  type = string
+}
 variable "oke_defined_tags" {
   description = "Defined tags for the OKE cluster."
   default = {}
@@ -93,5 +98,6 @@ variable "pools" {
     vm_defined_tags = optional(map(string))
     subnet_id_node = string
     subnet_id_pod = string
+    ssh_public_key = string
   }))
 }
