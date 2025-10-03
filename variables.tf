@@ -22,7 +22,7 @@ variable "cni_type" {
 }
 variable "cluster_type" {
   description = "Type of OKE cluster. Module supports 'BASIC' or 'ENHANCED'"
-  default = "ENHANCED"
+  default = "ENHANCED_CLUSTER"
   type = string
 }
 variable "oke_defined_tags" {
@@ -98,6 +98,6 @@ variable "pools" {
     vm_defined_tags = optional(map(string))
     subnet_id_node = string
     subnet_id_pod = string
-    ssh_public_key = string
+    ssh_public_key = optional(string)
   }))
 }
